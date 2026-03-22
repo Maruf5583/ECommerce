@@ -1,0 +1,52 @@
+﻿@model ECommerce.Models.Customer
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+
+        <div class="text-center my-4">
+            @if (!string.IsNullOrEmpty(Model.Image))
+            {
+                <img src="@Url.Content("~/CustomerImage/" + Model.Image)"
+                     width="250" height="250"
+                     class="img-thumbnail rounded-circle" />
+            }
+            else
+            {
+                <img src="~/images/default-avatar.png"
+                     width="250" height="250"
+                     class="img-thumbnail rounded-circle" />
+            }
+        </div>   @* ← এই </div> টা আগে ছিল না! *@
+
+        <div class="form-control my-3 bg-light">
+            <strong>Name:</strong> @Model.Name
+        </div>
+        <div class="form-control my-3 bg-light">
+            <strong>Email Address:</strong> @Model.Eamil
+        </div>
+        <div class="form-control my-3 bg-light">
+            <strong>Phone Number:</strong> @Model.Phone
+        </div>
+        <div class="form-control my-3 bg-light">
+            <strong>Password:</strong> @Model.Password
+        </div>
+        <div class="form-control my-3 bg-light">
+            <strong>Gender:</strong> @Model.Gender
+        </div>
+        <div class="form-control my-3 bg-light">
+            <strong>Country:</strong> @Model.Country
+        </div>
+        <div class="form-control my-3 bg-light">
+            <strong>City:</strong> @Model.City
+        </div>
+        <div class="form-control my-3 bg-light">
+            <strong>Address:</strong> @Model.Address
+        </div>
+
+        <a asp-action="FetchCustomer" asp-controller="Admin"
+           class="btn btn-secondary my-3">Back to List</a>
+
+    </div>
+    <div class="col-md-2"></div>
+</div>

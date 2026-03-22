@@ -1,0 +1,30 @@
+﻿@model Customer
+
+
+<div class="container-fluid px-4">
+    <h2 class="mt-4 text-center text-uppercase" style="letter-spacing:4px">Customer Update</h2>
+</div>
+
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <form method="post" enctype="multipart/form-data">
+            <input type="hidden" value="@Model.Id" name="Id" />
+            <input type="text" value="@Model.Name" name="Name" class="form-control my-3" placeholder="Name" />
+            <input type="text" value="@Model.Eamil" name="EmaillAddress" class="form-control my-3" placeholder="Email Address" />
+            <input type="text" value="@Model.Phone" name="PhoneNumber" class="form-control my-3" placeholder="Phone Number" />
+            <input type="text" value="@Model.Password" name="Password" class="form-control my-3" placeholder="Password" />
+            <input type="text" value="@Model.Gender" name="Gender" class="form-control my-3" placeholder="Password" />
+            <input type="text" value="@Model.Country" name="Country" class="form-control my-3" placeholder="Country" />
+            <input type="text" value="@Model.City" name="City" class="form-control my-3" placeholder="City" />
+            <input type="text" value="@Model.Address" name="Address" class="form-control my-3" placeholder="Address" />
+            <input type="file" name="Image" class="form-control my-3" />
+            <input type="submit" value="Update Customer" class="form-control my-3 btn btn-primary" />
+            
+        </form>
+        <a asp-action="FetchCustomer" asp-controller="Admin" class="btn btn-secondary my-3">Back to List</a>
+  
+    </div>
+    <div class="col-md-2"></div>
+</div>

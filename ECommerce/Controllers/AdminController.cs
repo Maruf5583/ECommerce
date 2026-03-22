@@ -104,6 +104,116 @@ namespace ECommerce.Controllers
 
         // ========== CUSTOMERS ==========
 
-     
+        public IActionResult FetchCustomer()
+        {
+            return View(_context.Customers.ToList());
+        }
+        public IActionResult CustomerDetails(int id)
+        {
+            var CustomerId = _context.Customers.FirstOrDefault(c => c.Id == id);
+            return View(CustomerId);
+        }
+        public IActionResult CustomerUpdate(int id)
+        {
+            var CustomerId = _context.Customers.Find(id);
+            return View(CustomerId);    
+        }
+        [HttpPost]
+        public IActionResult CustomerUpdate(Customer customer, IFormFile Image)
+        {
+            if (Image != null && Image.Length > 0)
+            {
+                string folderPath = Path.Combine(_env.WebRootPath, "CustomerImage");
+
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                string fileName = Path.GetFileName(Image.FileName);
+                string imagePath = Path.Combine(folderPath, fileName);
+
+                using (FileStream fs = new FileStream(imagePath, FileMode.Create))
+                {
+                    Image.CopyTo(fs);
+                }
+
+                customer.Image = fileName;
+                _context.Customers.Update(customer);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(FetchCustomer));
+
+
+            }
+            return View();
+
+
+        }
+
+
+        public IActionResult CustomerDelete(int id)
+        {
+            var Customer = _context.Customers.Find(id);
+            return View(Customer);
+        }
+
+
+        [HttpPost]
+        [ActionName("CustomerDelete")]
+        public IActionResult CustomerDeleteConfirmed(int id)
+        {
+            var Customer = _context.Customers.Find(id);
+            _context.Customers.Remove(Customer);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(FetchCustomer));
+        }
+
+
+        //Category
+        public IActionResult FetchCategory()
+        {
+            return View(_context.Categories.ToList());
+        }
+        public IActionResult AddCategory()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult AddCategory(Category cat)
+        {
+            _context.Categories.Add(cat);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(FetchCategory));
+        }
+
+        public IActionResult UpdateCategory(int id)
+        {
+            var category = _context.Categories.Find(id);
+            return View(category);
+        }
+        [HttpPost]
+        public IActionResult UpdateCategory(Category cat)
+        {
+            _context.Categories.Update(cat);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(FetchCategory));
+        }
+
+        public IActionResult DeleteCategoryConfirmed(int id)
+        {
+
+            return View(_context.Categories.FirstOrDefault(c => c.Id == id));
+        }
+
+
+
+        public IActionResult DeleteCategory(int id)
+        {
+            var Category = _context.Categories.Find(id);
+            _context.Categories.Remove(Category);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(FetchCategory));
+        }
+
     }
 }

@@ -1,0 +1,40 @@
+﻿@model ECommerce.Models.Admin
+
+<div class="container-fluid px-4">
+    <h2 class="mt-4 text-center text-uppercase">My Profile</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+
+        <!-- Profile Update -->
+        <form method="post">
+            <input type="hidden" name="Id" value="@Model.Id">
+
+            <input type="text" name="Name" class="form-control my-3" value="@Model.Name" />
+
+            <input type="text" name="Email" class="form-control my-3" value="@Model.Email" />
+
+            <input type="password" name="Password" class="form-control my-3" value="@Model.Password" />
+
+            <input type="hidden" name="Image" value="@Model.Image">
+
+            <input type="submit" value="Update Profile" class="btn btn-primary w-100" />
+        </form>
+
+        <!-- Image Update -->
+        <form method="post" asp-action="ChangeProfileImage" enctype="multipart/form-data">
+
+            <input type="hidden" name="adminId" value="@Model.Id">
+
+            <input type="file" name="Image" class="form-control my-3" />
+
+            <img src="@("~/AdminImage/" + Model.Image)" asp-append-version="true"
+                 style="width:250px;height:250px" />
+
+            <input type="submit" value="Change Profile" class="btn btn-primary w-100 mt-2" />
+
+        </form>
+
+    </div>
+</div>
