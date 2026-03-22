@@ -1,0 +1,26 @@
+﻿@model Product
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <h2 class="text-danger my-4">Delete Product</h2>
+        <p class="text-muted">Are you sure you want to delete this product?</p>
+
+        <form method="post" asp-action="DeleteProduct" asp-controller="Admin">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div>
+                <div class="form-control my-3 bg-light">
+                    <strong>Name:</strong> @Model.Name
+                </div>
+                <div class="form-control my-3 bg-light">
+                    <strong>Product Price:</strong> @Model.Price
+                </div>
+                <div class="form-control my-3 bg-light">
+                    <strong>Product Description:</strong> @Model.Description
+                </div>
+            </div>
+            <button type="submit" class="btn btn-danger my-3">Delete</button>
+            <a asp-action="FetchProduct" asp-controller="Admin" class="btn btn-secondary my-3">Back to List</a>
+        </form>
+
+    </div>
+</div>

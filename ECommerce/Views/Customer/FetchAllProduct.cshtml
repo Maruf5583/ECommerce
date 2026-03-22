@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "fetchAllProducts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-3">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+
+        <!-- Left Side -->
+        <div class="btn btn-info">
+            <h3 style="margin:0;">All Products</h3>
+        </div>
+       
+
+        <!-- Right Side (Clickable) -->
+        <div class="btn btn-primary">
+            <a asp-action="Index"
+               asp-controller="Customer"
+               style="text-decoration:none; color:blue; font-weight:bold;">
+
+                Bck to home page
+            </a>
+        </div>
+        
+
+    </div>
+
+    <div class="style=" display:flex; flex-wrap:wrap; gap:20px;">
+        
+        @await Html.PartialAsync("~/Views/Shared/_FetchProduct.cshtml", ViewData["product"])
+
+    </div>
+    <div>
+        @if(TempData["message"] != null)
+        {
+            <h4 class="text-success">@TempData["message"]</h4>
+        }
+    </div>
+  
+</div>

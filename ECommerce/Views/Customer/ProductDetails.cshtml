@@ -1,0 +1,60 @@
+﻿@model List<ECommerce.Models.Product>
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<div class="container mt-5">
+
+    @if (TempData["OrderSuccess"] != null)
+    {
+        <div class="alert alert-success text-center fs-5">
+            @TempData["OrderSuccess"]
+        </div>
+    }
+
+    @if (TempData["message"] != null)
+    {
+        <div class="alert alert-danger text-center fs-5">
+            @TempData["message"]
+        </div>
+    }
+
+    <h2 class="text-center mb-4 fw-bold">Product Details</h2>
+
+    @foreach (var product in Model)
+    {
+        <div class="row align-items-center shadow-lg p-4 rounded-4 bg-white">
+            <div class="col-md-6">
+                <img src="~/ProductImage/@product.Image"
+                     class="img-fluid rounded-3"
+                     style="max-height:400px; width:100%; object-fit:cover;"
+                     alt="@product.Name" />
+            </div>
+            <div class="col-md-6 ps-5">
+                <h2 class="fw-bold">@product.Name</h2>
+                <h3 class="text-success fw-bold">$@product.Price</h3>
+                <hr />
+                <p class="text-muted fs-5">@product.Description</p>
+                <hr />
+                <div class="d-flex gap-3 mt-4">
+                    <a href="/Customer/AddToCart/@product.Id"
+                       class="btn btn-warning btn-lg px-4">
+                        🛒 Add to Cart
+                    </a>
+                    <a href="/Customer/BuyNow/@product.Id"
+                       class="btn btn-success btn-lg px-4">
+                        ⚡ Buy Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="mt-4">
+        <a href="/Customer/FetchAllProduct"
+           class="btn btn-warning px-4 py-2">
+            ⬅ Back to Products
+        </a>
+    </div>
+</div>

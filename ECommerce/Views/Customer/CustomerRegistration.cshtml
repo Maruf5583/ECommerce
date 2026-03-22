@@ -1,0 +1,142 @@
+﻿@model Customer
+
+@{
+    ViewData["Title"] = "CustomerRegistration";
+    Layout = null;
+}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Molla - Bootstrap eCommerce Template</title>
+    <meta name="keywords" content="HTML5 Template">
+    <meta name="description" content="Molla - Bootstrap eCommerce Template">
+    <meta name="author" content="p-themes">
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="~/assets/images/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/assets/images/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/assets/images/icons/favicon-16x16.png">
+    <link rel="manifest" href="~/assets/images/icons/site.html">
+    <link rel="mask-icon" href="~/assets/images/icons/safari-pinned-tab.svg" color="#666666">
+    <link rel="shortcut icon" href="~/assets/images/icons/favicon.ico">
+    <meta name="apple-mobile-web-app-title" content="Molla">
+    <meta name="application-name" content="Molla">
+    <meta name="msapplication-TileColor" content="#cc9966">
+    <meta name="msapplication-config" content="~/assets/images/icons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="~/assets/vendor/line-awesome/line-awesome/line-awesome/css/line-awesome.min.css">
+    <!-- Plugins CSS File -->
+    <link rel="stylesheet" href="~/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/assets/css/plugins/owl-carousel/owl.carousel.css">
+    <link rel="stylesheet" href="~/assets/css/plugins/magnific-popup/magnific-popup.css">
+    <link rel="stylesheet" href="~/assets/css/plugins/jquery.countdown.css">
+    <!-- Main CSS File -->
+    <link rel="stylesheet" href="~/assets/css/style.css">
+    <link rel="stylesheet" href="~/assets/css/skins/skin-demo-3.css">
+    <link rel="stylesheet" href="~/assets/css/demos/demo-3.css">
+</head>
+
+<body class="bg-primary">
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-7">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header"><h3 class="text-center font-weight-light my-4">Create Account</h3></div>
+                                <div class="card-body">
+                                    <form method="post" enctype="multipart/form-data" asp-action="CustomerRegistration" asp-controller="Customer">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                                        <div class="form-floating mb-3">
+                                            <input asp-for="Name" class="form-control" placeholder="Enter your full name" />
+                                            <label asp-for="Name">Full Name</label>
+                                            <span asp-validation-for="Name" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-floating mb-3">
+                                            <input asp-for="Phone" class="form-control" placeholder="Enter your phone number" />
+                                            <label asp-for="Phone">Phone Number</label>
+                                            <span asp-validation-for="Phone" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-floating mb-3">
+                                            <input asp-for="Eamil" class="form-control" placeholder="Enter your email" />
+                                            <label asp-for="Eamil">Email Address</label>
+                                            <span asp-validation-for="Eamil" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-floating mb-3">
+                                            <input asp-for="Password" class="form-control" placeholder="Enter your password" />
+                                            <label asp-for="Password">Password</label>
+                                            <span asp-validation-for="Password" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="Gender" class="form-label">Gender</label>
+                                            <select asp-for="Gender" class="form-select">
+                                                <option value="">-- Select Gender --</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                            <span asp-validation-for="Gender" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-floating mb-3">
+                                            <input asp-for="Country" class="form-control" placeholder="Enter your country" />
+                                            <label asp-for="Country">Country</label>
+                                            <span asp-validation-for="Country" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-floating mb-3">
+                                            <input asp-for="City" class="form-control" placeholder="Enter your city" />
+                                            <label asp-for="City">City</label>
+                                            <span asp-validation-for="City" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-floating mb-3">
+                                            <textarea asp-for="Address" class="form-control" placeholder="Enter your address" style="height: 100px"></textarea>
+                                            <label asp-for="Address">Address</label>
+                                            <span asp-validation-for="Address" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label asp-for="Image" class="form-label">Profile Image</label>
+                                            <input asp-for="Image" class="form-control" type="file" accept="image/*" />
+                                            <span asp-validation-for="Image" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="mt-4 mb-0">
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="card-footer text-center py-3">
+                                    <div>Already have an account? <a asp-action="CustomerLogin" asp-controller="Customer">Go to Login!</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <!-- Plugins JS File -->
+        <script src="~/assets/js/jquery.min.js"></script>
+        <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+        <script src="~/assets/js/jquery.hoverIntent.min.js"></script>
+        <script src="~/assets/js/jquery.waypoints.min.js"></script>
+        <script src="~/assets/js/superfish.min.js"></script>
+        <script src="~/assets/js/owl.carousel.min.js"></script>
+        <script src="~/assets/js/bootstrap-input-spinner.js"></script>
+        <script src="~/assets/js/jquery.plugin.min.js"></script>
+        <script src="~/assets/js/jquery.magnific-popup.min.js"></script>
+        <script src="~/assets/js/jquery.countdown.min.js"></script>
+        <!-- Main JS File -->
+        <script src="~/assets/js/main.js"></script>
+        <script src="~/assets/js/demos/demo-3.js"></script>
+</body>

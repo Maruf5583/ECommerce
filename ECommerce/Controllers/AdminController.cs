@@ -214,6 +214,131 @@ namespace ECommerce.Controllers
             _context.SaveChanges();
             return RedirectToAction(nameof(FetchCategory));
         }
+        //product
+        public IActionResult FetchProduct()
+        {
+            var product = _context.Products.ToList();
+            return View(product);
+        }
+
+        public IActionResult AddProduct()
+        {
+            List<Category> categories = _context.Categories.ToList();
+            ViewData["category"] = categories;
+            return View();
+        }
+        [HttpPost]
+        public IActionResult AddProduct(Product product, IFormFile Image)
+        {
+            if (Image != null && Image.Length > 0)
+            {
+                string folderPath = Path.Combine(_env.WebRootPath, "ProductImage");
+
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                string fileName = Path.GetFileName(Image.FileName);
+                string imagePath = Path.Combine(folderPath, fileName);
+
+                using (FileStream fs = new FileStream(imagePath, FileMode.Create))
+                {
+                    Image.CopyTo(fs);
+                }
+
+                product.Image = fileName;
+                _context.Products.Add(product);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(FetchProduct));
+
+            }
+            return View();
+
+        }
+
+        public IActionResult ProductDetails(int id)
+        {
+            var product = _context.Products
+                .Include(p => p.Category)
+                .FirstOrDefault(p => p.Id == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return View(product);
+        }
+
+
+        [HttpGet]
+        public IActionResult DeleteProductConfirmed(int id)
+        {
+            var product = _context.Products.FirstOrDefault(p => p.Id == id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return View(product);
+        }
+
+
+        [HttpPost]
+        public IActionResult DeleteProduct(int id)
+        {
+            var product = _context.Products.Find(id);
+            if (product != null)
+            {
+                _context.Products.Remove(product);
+                _context.SaveChanges();
+            }
+            return RedirectToAction(nameof(FetchProduct));
+        }
+
+        public IActionResult ProductUpdate(int id)
+        {
+            List<Category> categories = _context.Categories.ToList();
+            ViewData["category"] = categories;
+            var product = _context.Products.Find(id);
+            ViewBag.selectedCategoryId = product.CategoryId;
+            return View(product);
+        }
+        [HttpPost]
+        public IActionResult ProductUpdate(Product pro)
+        {
+            _context.Products.Update(pro);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(FetchProduct));
+        }
+
+
+        public IActionResult ChangeProductImage(IFormFile Image, Product product)
+        {
+            if (Image != null && Image.Length > 0)
+            {
+                string folderPath = Path.Combine(_env.WebRootPath, "ProductImage");
+
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                string fileName = Path.GetFileName(Image.FileName);
+                string imagePath = Path.Combine(folderPath, fileName);
+
+                using (FileStream fs = new FileStream(imagePath, FileMode.Create))
+                {
+                    Image.CopyTo(fs);
+                }
+
+                product.Image = fileName;
+                _context.Products.Update(product);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction(nameof(FetchProduct));
+        }
 
     }
 }

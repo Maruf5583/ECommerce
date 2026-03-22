@@ -1,0 +1,24 @@
+﻿@model ECommerce.Models.Category
+
+<div class="container-fluid px-4">
+    <h2 class="mt-4 text-center text-uppercase" style="letter-spacing:4px">Update Category</h2>
+</div>
+
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <form method="post" enctype="multipart/form-data">
+
+            <input type="text" name="Name" class="form-control my-3" placeholder="Category name" value="@Model.Name" />
+            <input type="submit" value="Update Category" class="form-control my-3 btn btn-primary" />
+
+
+
+        </form>
+        <a asp-action="FetchCategory" asp-controller="Admin" class="btn btn-secondary my-3">Back to List</a>
+
+    </div>
+    <div class="col-md-2"></div>
+</div>
+

@@ -1,0 +1,44 @@
+﻿@model ECommerce.Models.Product
+
+
+
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+
+
+        @if (Model != null)
+        {
+            <div class="text-center my-4">
+                @if (!string.IsNullOrEmpty(Model.Image))
+                {
+                    <img src="~/ProductImage/@Model.Image"
+                         width="250" height="250"
+                         class="img-thumbnail rounded-circle" />
+                }
+
+                <div class="form-control my-3 bg-light">
+                    <strong>Name:</strong> @Model.Name
+                </div>
+
+                <div class="form-control my-3 bg-light">
+                    <strong>Product Price:</strong> @Model.Price
+                </div>
+
+                <div class="form-control my-3 bg-light">
+                    <strong>Product Description:</strong> @Model.Description
+                </div>
+
+                <div class="form-control my-3 bg-light">
+                    <strong>Category:</strong> @Model.Category.Name               
+                    </div>
+            </div>
+        }
+
+            <a asp-action="FetchProduct" asp-controller="Admin" class="btn btn-secondary my-3">Back to List</a>
+
+        </div>
+
+    </div>
+</div>

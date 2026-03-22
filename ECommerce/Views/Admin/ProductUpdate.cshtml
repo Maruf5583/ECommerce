@@ -1,0 +1,39 @@
+﻿@model Product
+<div class="container-fluid px-4">
+    <h2 class="mt-4 text-center text-uppercase" style="letter-spacing:4px">Update Product</h2>
+</div>
+<div class="row">
+    <div class="col-md-2"></div>
+
+    <div class="col-md-8">
+        <form method="post" asp-action="ProductUpdate" asp-controller="Admin">
+            <input type="hidden" name="Id" value="@Model.Id">
+            <input type="text" placeholder="Enter Your Name" name="Name" class="form-control my-3" value="@Model.Name" />
+
+            <input type="text" placeholder="Enter Your price" name="Price" class="form-control my-3" value="@Model.Price" />
+
+            <input type="text" placeholder="Enter Your Description" name="Description" class="form-control my-3" value="@Model.Description" />
+            @await Html.PartialAsync("~/Views/Shared/_CategoryDropdown.cshtml", ViewData["category"] as IEnumerable<ECommerce.Models.Category>)
+
+            <input type="hidden" name="Image" value="@Model.Image">
+            <input type="submit" value="Update Product" class="form-control my-3 btn btn-primary" />
+        </form>
+        <form method="post" asp-action="ChangeProductImage" asp-controller="Admin" enctype="multipart/form-data">
+            <input type="hidden" name="Id" value="@Model.Id">
+            <input type="hidden" placeholder="Enter Your Name" name="Name" class="form-control my-3" value="@Model.Name" />
+
+            <input type="hidden" placeholder="Enter Your price" name="Price" class="form-control my-3" value="@Model.Price" />
+
+            <input type="hidden" placeholder="Enter Your Description" name="Description" class="form-control my-3" value="@Model.Description" />
+            <input type="hidden" name="CategoryId" class="form-control my-3" value="@Model.CategoryId">
+            <img src="@("~/ProductImage/" + Model.Image)" asp-append-version="true" style="width:250px;height:250px" class="my-3" /></br>
+            <input type="file" name="Image" />
+            <input type="submit" value="Update Product Image" class="form-control my-3 btn btn-primary" />
+        </form>
+        <a asp-action="FetchProduct" asp-controller="Admin" class="btn btn-secondary my-3">Back to List</a>
+     
+      
+    </div>
+
+    <div class="col-md-2"></div>
+</div>

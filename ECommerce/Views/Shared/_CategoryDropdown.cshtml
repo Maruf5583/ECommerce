@@ -1,0 +1,12 @@
+﻿@model IEnumerable<ECommerce.Models.Category>
+
+<select name="CategoryId" class="form-control my-3">
+    <option value="">-- Select Category --</option>
+    @if (Model != null)
+    {
+        @foreach (var category in Model)
+        {
+            <option value="@category.Id" selected="@(category.Id == ViewBag.selectedCategoryId)">@category.Name</option>
+        }
+    }
+</select>

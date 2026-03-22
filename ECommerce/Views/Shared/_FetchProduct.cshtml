@@ -1,0 +1,30 @@
+﻿@model List<ECommerce.Models.Product>
+
+<div style="display:flex; flex-wrap:wrap; gap:20px;">
+    @foreach (var pro in Model)
+    {
+        <div class="product" style="width:220px; border:1px solid #ddd;
+                 border-radius:10px; padding:10px;">
+
+            <a href="/Customer/ProductDetails/@pro.Id">
+                <img src="~/ProductImage/@pro.Image"
+                     style="width:200px; height:200px; object-fit:cover;"
+                     alt="@pro.Name" />
+            </a>
+
+            <h5 class="mt-2">@pro.Name</h5>
+            <p class="text-success fw-bold">$@pro.Price</p>
+
+            <div style="display:flex; gap:5px;">
+                <a href="/Customer/AddToCart/@pro.Id"
+                   class="btn btn-warning btn-sm">
+                    🛒 Add To Cart
+                </a>
+                <a href="/Customer/BuyNow/@pro.Id"
+                   class="btn btn-success btn-sm">
+                    ⚡ Buy Now
+                </a>
+            </div>
+        </div>
+    }
+</div>

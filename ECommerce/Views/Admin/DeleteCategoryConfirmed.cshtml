@@ -1,0 +1,43 @@
+﻿@model Category
+
+
+
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+
+        <h2 class="text-danger my-4">Delete Catagory</h2>
+        <p class="text-muted">Are you sure you want to delete this category?</p>
+
+
+        <form method="post" action="/Admin/DeleteCategory/@Model.Id">
+
+            
+
+
+
+            <div>
+                
+                <div class="form-control my-3 bg-light">
+                    <strong>Id:</strong> @Model.Id
+                </div>
+                <div class="form-control my-3 bg-light">
+                    <strong>Category Name:</strong> @Model.Name
+                </div>
+                
+
+
+
+            </div>
+            <button type="submit" class="btn btn-danger my-3">Delete</button>
+            <a asp-action="FetchCategory" asp-controller="Admin" class="btn btn-secondary my-3">Back to List</a>
+
+        </form>
+
+    </div>
+</div>
+
+
+
+
