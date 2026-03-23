@@ -177,5 +177,66 @@ namespace ECommerce.Controllers
             return View(products);
         }
 
+
+        ///cart
+
+        public IActionResult AddToCart(int id)
+        {
+            string isLogin = HttpContext.Session.GetString("customerSession");
+            if (isLogin != null)
+            {
+                var product = _context.Products.FirstOrDefault(p => p.Id == id);
+                if (product == null)
+                {
+                    TempData["message"] = "Product Not Found!";
+                    return RedirectToAction(nameof(FetchAllProduct));
+                }
+
+                Cart cart = new Cart();
+                cart.ProductId = product.Id;
+                cart.CustomerId = int.Parse(isLogin);
+                cart.ProductQuantity = 1;
+                cart.CartStatus = 0;
+
+                _context.Carts.Add(cart);
+                _context.SaveChanges();
+
+                TempData["message"] = "✅ Product Successfully Added in Cart";
+                return RedirectToAction(nameof(FetchAllProduct));
+            }
+            return RedirectToAction(nameof(CustomerLogin));
+        }
+
+        public IActionResult FetchCart()
+        {
+            List<Category> category = _context.Categories.ToList();
+            ViewData["category"] = category;
+            string customerId = HttpContext.Session.GetString("customerSession");
+            if (customerId != null && int.TryParse(customerId, out int custId))
+            {
+                var cart = _context.Carts
+                    .Where(c => c.CustomerId == custId)
+                    .Include(c => c.products)
+                    .Include(c => c.customers)
+                    .ToList();
+
+                return View(cart);
+            }
+            else
+            {
+                return RedirectToAction(nameof(CustomerLogin));
+            }
+
+
+        }
+
+        public IActionResult RemoveProduct(int id)
+        {
+            var product = _context.Carts.Find(id);
+            _context.Carts.Remove(product);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(FetchCart));
+        }
+
     }
 }

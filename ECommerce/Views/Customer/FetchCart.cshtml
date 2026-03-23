@@ -1,0 +1,41 @@
+﻿@model List<Cart>
+
+@{
+    ViewData["Title"] = "FetchCart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container mt-3">
+    <h2>Your Cart</h2>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered table-striped text-center">
+                <thead>
+                    <tr>
+                        <th>Card Id</th>
+                        <th>Product Name</th>
+                        <th>Product Quantity</th>
+                        <th>Product Price</th>
+                        <th>Optins</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cart in Model)
+                    {
+                        <tr>
+                            <td>@cart.Id</td>
+                            <td>@cart.products.Name</td>
+                            <td>@cart.ProductQuantity</td>
+                            <td>@cart.products.Price</td>
+                            <td>
+                                <a asp-action="RemoveProduct" asp-controller="Customer" asp-route-Id="@cart.Id" class="btn btn-danger" >Remove to cart List</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div>
+                <a asp-action="Index" asp-controller="Customer" class="btn btn-primary">Back to home page</a>
+            </div>
+        </div>
+    </div>
+</div>

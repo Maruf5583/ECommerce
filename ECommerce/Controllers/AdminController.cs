@@ -360,5 +360,52 @@ namespace ECommerce.Controllers
             return RedirectToAction(nameof(FetchProduct));
         }
 
+        //Cart
+
+        public IActionResult FetchCart()
+        {
+            // ✅ ProductId/CustomerId er bodole Product/Customer use koro
+            var cart = _context.Carts
+                        .Include(c => c.products)
+                        .Include(c => c.customers)
+                        .ToList();
+            return View(cart);
+        }
+
+        public IActionResult DeleteCartConfirmed(int id)
+        {
+            var cart = _context.Carts
+                        .Include(c => c.products)
+                        .Include(c => c.customers)
+                        .FirstOrDefault(f => f.Id == id);
+            return View(cart);
+        }
+
+        public IActionResult DeleteCart(int id)
+        {
+            var cart = _context.Carts.Find(id);
+            _context.Carts.Remove(cart);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(FetchCart));
+        }
+
+        public IActionResult UpdateCart(int id)
+        {
+            var cart = _context.Carts
+                        .Include(c => c.products)
+                        .Include(c => c.customers)
+                        .FirstOrDefault(c => c.Id == id);
+            return View(cart);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateCart(int cartStatus, Cart cart)
+        {
+            cart.CartStatus = cartStatus;
+            _context.Carts.Update(cart);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(FetchCart));
+        }
+
     }
 }
