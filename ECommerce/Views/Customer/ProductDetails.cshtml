@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Product Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container mt-5">
@@ -38,12 +39,12 @@
                 <p class="text-muted fs-5">@product.Description</p>
                 <hr />
                 <div class="d-flex gap-3 mt-4">
-                    <a href="/Customer/AddToCart/@product.Id"
-                       class="btn btn-warning btn-lg px-4">
+                    <a href="@Url.Action("AddToCart", "Customer", new { id = product.Id })"
+                           class="btn btn-warning btn-lg px-4">
                         🛒 Add to Cart
                     </a>
-                    <a href="/Customer/BuyNow/@product.Id"
-                       class="btn btn-success btn-lg px-4">
+                    <a href="@Url.Action("BuyNow", "Customer", new { id = product.Id })"
+                           class="btn btn-success btn-lg px-4">
                         ⚡ Buy Now
                     </a>
                 </div>
@@ -52,8 +53,8 @@
     }
 
     <div class="mt-4">
-        <a href="/Customer/FetchAllProduct"
-           class="btn btn-warning px-4 py-2">
+        <a href="@Url.Action("FetchAllProduct", "Customer")"
+               class="btn btn-warning px-4 py-2">
             ⬅ Back to Products
         </a>
     </div>

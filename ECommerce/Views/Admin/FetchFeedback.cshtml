@@ -1,0 +1,50 @@
+﻿@model List<Feedback>
+
+<div class="container-fluid px-4">
+    <h2 class="mt-4 text-center text-uppercase" style="letter-spacing:4px">All Feedback</h2>
+</div>
+
+<div class="container mt-4">
+
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Feedback List</h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle text-center">
+                    <thead class="table-dark">
+                        <tr>
+                         
+                            <th>User Name</th>
+                            <th>User Message </th>
+
+
+
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var feed in Model)
+                        {
+                            <tr>
+                                
+                                <td>@feed.Name</td>
+                                <td>@feed.Message</td>
+
+                                <td>
+                                   
+                                    <a href="@Url.Action("DeleteFeedbackConfirmed", "Admin", new { id = feed.Id })" class="btn btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>

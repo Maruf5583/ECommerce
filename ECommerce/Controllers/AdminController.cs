@@ -339,6 +339,26 @@ namespace ECommerce.Controllers
 
             return RedirectToAction(nameof(FetchProduct));
         }
+        //feedback
+
+        public IActionResult FetchFeedback()
+        {
+            var feedback = _context.Feedbacks.ToList();
+            return View(feedback);
+        }
+
+        public IActionResult DeleteFeedbackConfirmed(int id)
+        {
+            var feedback = _context.Feedbacks.FirstOrDefault(f => f.Id == id);
+            return View(feedback);
+        }
+        public IActionResult DeleteFeedback(int id)
+        {
+            var feedback = _context.Feedbacks.Find(id);
+            _context.Feedbacks.Remove(feedback);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(FetchProduct));
+        }
 
     }
 }

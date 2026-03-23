@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Customer Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="mt-2">Get in Touch with Us</h2>
+
+<div class="container mt-4">
+    <h3 class="text-success mt-4">@TempData["message"]</h3>
+    <div class="row">
+        <div class="col-md-5">
+            <form method="post">
+                <input type="text" placeholder="Enter your name" name="Name" value="" class="form-control mb-4" />
+                
+                <textarea placeholder="Enter your messagr" name="Message" value="Message" class="form-control mb-4"></textarea>
+                <input type="submit" class="btn btn-warning btn-block" />
+            </form>
+        </div>
+        <div class="col-md-1">
+            <div class="col-md-6">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3619.3138492688186!2d67.15182490000002!3d24.887274032530016!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb339999415e0c3%3A0x36742eee0fd9c291!2sAptech%20Metro%20Star%20Gate!5e0!3m2!1sen!2sbd!4v1773681779688!5m2!1sen!2sbd" width="1000" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </div>
+</div>

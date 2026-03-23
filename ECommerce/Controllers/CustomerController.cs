@@ -139,6 +139,21 @@ namespace ECommerce.Controllers
         }
 
 
+        public IActionResult Feedback()
+        {
+            List<Category> category = _context.Categories.ToList();
+            ViewData["category"] = category;
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Feedback(Feedback feedback)
+        {
+            TempData["message"] = "Thanks for submitting feedback";
+            _context.Feedbacks.Add(feedback);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Feedback));
+        }
+
 
 
         //all product show
