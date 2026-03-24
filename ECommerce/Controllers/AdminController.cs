@@ -407,5 +407,65 @@ namespace ECommerce.Controllers
             return RedirectToAction(nameof(FetchCart));
         }
 
+
+        //orders
+        public IActionResult FetchOrders()
+        {
+            var orders = _context.Orders
+                .Include(o => o.carts)
+                    .ThenInclude(c => c.products)
+                .Include(o => o.carts)
+                    .ThenInclude(c => c.customers)
+                .ToList();
+            return View(orders);
+        }
+
+        // Order Details
+        public IActionResult OrderDetails(int id)
+        {
+            var order = _context.Orders
+                .Include(o => o.carts)
+                    .ThenInclude(c => c.products)
+                .Include(o => o.carts)
+                    .ThenInclude(c => c.customers)
+                .FirstOrDefault(o => o.Id == id);
+
+            if (order == null)
+            {
+                return RedirectToAction(nameof(FetchOrders));
+            }
+            return View(order);
+        }
+
+        // Delete Confirm Page
+        public IActionResult DeleteOrderConfirmed(int id)
+        {
+            var order = _context.Orders
+                .Include(o => o.carts)
+                    .ThenInclude(c => c.products)
+                .Include(o => o.carts)
+                    .ThenInclude(c => c.customers)
+                .FirstOrDefault(o => o.Id == id);
+
+            if (order == null)
+            {
+                return RedirectToAction(nameof(FetchOrders));
+            }
+            return View(order);
+        }
+
+        // Delete Action
+        public IActionResult DeleteOrder(int id)
+        {
+            var order = _context.Orders.Find(id);
+            if (order != null)
+            {
+                _context.Orders.Remove(order);
+                _context.SaveChanges();
+            }
+            return RedirectToAction(nameof(FetchOrders));
+        }
+
+
     }
 }

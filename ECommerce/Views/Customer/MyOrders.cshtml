@@ -1,0 +1,64 @@
+﻿@model List<ECommerce.Models.Order>
+@{
+    ViewData["Title"] = "MyOrders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="fw-bold mb-4">📦 My Orders</h2>
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-warning text-center fs-5">
+            কোনো order নেই।
+            <a href="/Customer/FetchAllProduct">Shop Now</a>
+        </div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Product Name</th>
+                    <th>Product Image</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.Id</td>
+                        <td>@order.carts?.products?.Name</td>
+                        <td>
+                            <img src="~/ProductImage/@order.carts?.products?.Image"
+                                 width="60" height="60"
+                                 style="object-fit:cover; border-radius:8px;" />
+                        </td>
+                        <td>@order.carts?.ProductQuantity</td>
+                        <td>
+                            @if (order.Status == 0)
+                            {
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            }
+                            else if (order.Status == 1)
+                            {
+                                <span class="badge bg-primary">Confirmed</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Delivered</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <a href="/Customer/Index" class="btn btn-warning mt-3">⬅ Back to Home</a>
+</div>
+
+

@@ -179,32 +179,81 @@ namespace ECommerce.Controllers
 
 
         ///cart
-
         public IActionResult AddToCart(int id)
         {
             string isLogin = HttpContext.Session.GetString("customerSession");
-            if (isLogin != null)
+            if (isLogin == null)
+                return RedirectToAction(nameof(CustomerLogin));
+
+            var product = _context.Products.FirstOrDefault(p => p.Id == id);
+            if (product == null)
             {
-                var product = _context.Products.FirstOrDefault(p => p.Id == id);
-                if (product == null)
-                {
-                    TempData["message"] = "Product Not Found!";
-                    return RedirectToAction(nameof(FetchAllProduct));
-                }
-
-                Cart cart = new Cart();
-                cart.ProductId = product.Id;
-                cart.CustomerId = int.Parse(isLogin);
-                cart.ProductQuantity = 1;
-                cart.CartStatus = 0;
-
-                _context.Carts.Add(cart);
-                _context.SaveChanges();
-
-                TempData["message"] = "✅ Product Successfully Added in Cart";
+                TempData["message"] = "Product Not Found!";
                 return RedirectToAction(nameof(FetchAllProduct));
             }
-            return RedirectToAction(nameof(CustomerLogin));
+
+            int customerId = int.Parse(isLogin);
+
+          
+            var existingCart = _context.Carts.FirstOrDefault(c =>
+                c.ProductId == id &&
+                c.CustomerId == customerId &&
+                c.CartStatus == 0);
+
+            if (existingCart != null)
+            {
+              
+                existingCart.ProductQuantity += 1;
+                _context.Carts.Update(existingCart);
+            }
+            else
+            {
+               
+                var cart = new Cart
+                {
+                    ProductId = id,
+                    CustomerId = customerId,
+                    ProductQuantity = 1,
+                    CartStatus = 0
+                };
+                _context.Carts.Add(cart);
+            }
+
+            _context.SaveChanges();
+            TempData["message"] = "✅ Product Successfully Added in Cart";
+            return RedirectToAction(nameof(FetchAllProduct));
+        }
+        public IActionResult IncreaseQuantity(int id)
+        {
+            var cart = _context.Carts.Find(id);
+            if (cart != null)
+            {
+                cart.ProductQuantity += 1;
+                _context.Carts.Update(cart);
+                _context.SaveChanges();
+            }
+            return RedirectToAction(nameof(FetchCart));
+        }
+
+        public IActionResult DecreaseQuantity(int id)
+        {
+            var cart = _context.Carts.Find(id);
+            if (cart != null)
+            {
+                if (cart.ProductQuantity > 1)
+                {
+                    cart.ProductQuantity -= 1;
+                    _context.Carts.Update(cart);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    // ✅ Quantity 1 হলে cart থেকে remove
+                    _context.Carts.Remove(cart);
+                    _context.SaveChanges();
+                }
+            }
+            return RedirectToAction(nameof(FetchCart));
         }
 
         public IActionResult FetchCart()
@@ -235,6 +284,70 @@ namespace ECommerce.Controllers
             var product = _context.Carts.Find(id);
             _context.Carts.Remove(product);
             _context.SaveChanges();
+            return RedirectToAction(nameof(FetchCart));
+        }
+
+
+
+        // ✅ MyOrders - শুধু orders দেখাবে
+        public IActionResult MyOrders()
+        {
+            string isLogin = HttpContext.Session.GetString("customerSession");
+            if (isLogin == null)
+                return RedirectToAction(nameof(CustomerLogin));
+
+            int customerId = int.Parse(isLogin);
+
+            var orders = _context.Orders
+                .Include(o => o.carts)
+                    .ThenInclude(c => c.products)
+                .Include(o => o.carts)
+                    .ThenInclude(c => c.customers)
+                .Where(o => o.carts!.CustomerId == customerId)
+                .ToList();
+
+            List<Category> category = _context.Categories.ToList();
+            ViewData["category"] = category;
+
+            return View(orders);
+        }
+
+        // ✅ PlaceOrder - parameter নাম "id" করুন
+        public IActionResult PlaceOrder(int id)
+        {
+            string isLogin = HttpContext.Session.GetString("customerSession");
+            if (isLogin == null)
+                return RedirectToAction(nameof(CustomerLogin));
+
+            var cart = _context.Carts.Find(id);
+            if (cart == null)
+            {
+                TempData["message"] = "❌ Cart পাওয়া যায়নি!";
+                return RedirectToAction(nameof(FetchCart));
+            }
+
+            // Duplicate check
+            var existingOrder = _context.Orders.FirstOrDefault(o => o.CartId == id);
+            if (existingOrder != null)
+            {
+                TempData["message"] = "⚠️ এই product এর order আগেই দেওয়া হয়েছে!";
+                return RedirectToAction(nameof(FetchCart));
+            }
+
+            // Cart status update
+            cart.CartStatus = 1;
+            _context.Carts.Update(cart);
+
+            // Order insert
+            var order = new Order
+            {
+                CartId = id,
+                Status = 0
+            };
+            _context.Orders.Add(order);
+            _context.SaveChanges();
+
+            TempData["message"] = "✅ Order সফলভাবে দেওয়া হয়েছে!";
             return RedirectToAction(nameof(FetchCart));
         }
 

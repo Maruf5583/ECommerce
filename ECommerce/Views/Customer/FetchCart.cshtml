@@ -1,41 +1,457 @@
-﻿@model List<Cart>
-
+﻿@model List<ECommerce.Models.Cart>
+@using System.Globalization
 @{
-    ViewData["Title"] = "FetchCart";
+    ViewData["Title"] = "Shopping Cart";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    decimal grandTotal = 0m;
+    foreach (var x in Model)
+    {
+        if (x.products != null && decimal.TryParse(x.products.Price.ToString(),
+            NumberStyles.Any, CultureInfo.InvariantCulture, out var gp))
+        {
+            grandTotal += gp * x.ProductQuantity;
+        }
+    }
 }
-<div class="container mt-3">
-    <h2>Your Cart</h2>
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-bordered table-striped text-center">
-                <thead>
-                    <tr>
-                        <th>Card Id</th>
-                        <th>Product Name</th>
-                        <th>Product Quantity</th>
-                        <th>Product Price</th>
-                        <th>Optins</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var cart in Model)
-                    {
-                        <tr>
-                            <td>@cart.Id</td>
-                            <td>@cart.products.Name</td>
-                            <td>@cart.ProductQuantity</td>
-                            <td>@cart.products.Price</td>
-                            <td>
-                                <a asp-action="RemoveProduct" asp-controller="Customer" asp-route-Id="@cart.Id" class="btn btn-danger" >Remove to cart List</a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <div>
-                <a asp-action="Index" asp-controller="Customer" class="btn btn-primary">Back to home page</a>
+
+<style>
+    .cart-wrap {
+        background: #fff;
+        padding: 28px 0 50px;
+        min-height: 60vh;
+    }
+    .breadcrumb-bar {
+        font-size: 13px;
+        color: #fff;
+        margin-bottom: 14px;
+    }
+    .breadcrumb-bar a {
+        color: #fff;
+        text-decoration: none;
+    }
+    .breadcrumb-bar a:hover { color: #e8ab27; }
+
+    .cart-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #222;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* Left Card */
+    .cart-card {
+        background: #fff;
+        border: 1px solid #e8e8e8;
+        border-radius: 4px;
+    }
+    .cart-card-header {
+        padding: 16px 20px 12px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .cart-card-header h6 {
+        font-size: 15px;
+        font-weight: 700;
+        color: #222;
+        margin: 0 0 2px;
+    }
+    .cart-card-header p {
+        font-size: 13px;
+        color: #999;
+        margin: 0;
+    }
+
+    /* Cart Item */
+    .cart-item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 18px 20px;
+        border-bottom: 1px solid #f5f5f5;
+    }
+    .cart-item:last-child { border-bottom: none; }
+
+    .cart-item img {
+        width: 85px;
+        height: 85px;
+        object-fit: contain;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        padding: 4px;
+        background: #fff;
+        flex-shrink: 0;
+    }
+
+    .item-info { flex: 1; min-width: 0; }
+    .item-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: #222;
+        margin-bottom: 4px;
+    }
+    .item-unit-label {
+        font-size: 13px;
+        color: #999;
+        margin-bottom: 7px;
+    }
+    .badge-pending {
+        background: #fff8e1;
+        color: #d4880a;
+        border: 1px solid #ffd54f;
+        padding: 2px 9px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    .badge-ordered {
+        background: #e8f5e9;
+        color: #2e7d32;
+        border: 1px solid #a5d6a7;
+        padding: 2px 9px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* Qty */
+    .qty-wrap {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+    .qty-btn {
+        width: 34px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f5f5;
+        color: #444;
+        text-decoration: none;
+        font-size: 17px;
+        font-weight: 600;
+        border: none;
+        transition: all 0.15s;
+    }
+    .qty-btn:hover {
+        background: #e8ab27;
+        color: #fff;
+    }
+    .qty-num {
+        width: 42px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 700;
+        color: #222;
+        background: #fff;
+        height: 34px;
+        line-height: 34px;
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+    }
+
+    /* Price */
+    .item-price-area {
+        text-align: right;
+        flex-shrink: 0;
+        min-width: 140px;
+    }
+    .item-total-price {
+        font-size: 18px;
+        font-weight: 700;
+        color: #222;
+    }
+    .item-calc {
+        font-size: 12px;
+        color: #bbb;
+        margin-top: 2px;
+    }
+    .btn-order {
+        display: inline-block;
+        margin-top: 8px;
+        background: #e8ab27;
+        color: #fff;
+        border-radius: 3px;
+        padding: 6px 15px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        letter-spacing: 0.2px;
+        transition: background 0.2s;
+    }
+    .btn-order:hover {
+        background: #cf9820;
+        color: #fff;
+    }
+    .ordered-label {
+        font-size: 12px;
+        color: #aaa;
+        margin-top: 8px;
+        display: block;
+    }
+
+    /* Remove */
+    .btn-remove {
+        background: none;
+        border: none;
+        color: #ccc;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 4px;
+        text-decoration: none;
+        flex-shrink: 0;
+        transition: color 0.2s;
+        line-height: 1;
+    }
+    .btn-remove:hover { color: #e53935; }
+
+    /* Summary */
+    .summary-card {
+        background: #fff;
+        border: 1px solid #e8e8e8;
+        border-radius: 4px;
+        padding: 22px;
+        position: sticky;
+        top: 20px;
+    }
+    .summary-heading {
+        font-size: 17px;
+        font-weight: 700;
+        color: #222;
+        margin-bottom: 16px;
+        padding-bottom: 14px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    .summary-line {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #555;
+        padding: 9px 0;
+        border-bottom: 1px solid #f5f5f5;
+    }
+    .summary-line:last-of-type { border-bottom: none; }
+    .summary-line span:last-child { font-weight: 500; color: #333; }
+    .free-label { color: #2e7d32 !important; font-weight: 600 !important; }
+    .summary-total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 2px solid #222;
+    }
+    .summary-total-label {
+        font-size: 16px;
+        font-weight: 700;
+        color: #222;
+    }
+    .summary-total-amount {
+        font-size: 22px;
+        font-weight: 700;
+        color: #e8ab27;
+    }
+    .btn-addmore {
+        display: block;
+        text-align: center;
+        padding: 11px;
+        border: 2px solid #222;
+        border-radius: 3px;
+        color: #222;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        margin-top: 16px;
+        transition: all 0.2s;
+    }
+    .btn-addmore:hover {
+        background: #222;
+        color: #fff;
+    }
+    .btn-checkout-main {
+        display: block;
+        text-align: center;
+        padding: 13px;
+        background: #222;
+        border-radius: 3px;
+        color: #fff;
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: none;
+        margin-top: 10px;
+        letter-spacing: 0.5px;
+        transition: background 0.2s;
+    }
+    .btn-checkout-main:hover {
+        background: #e8ab27;
+        color: #fff;
+    }
+
+    /* Empty */
+    .empty-cart {
+        text-align: center;
+        padding: 70px 20px;
+        background: #fff;
+        border: 1px solid #e8e8e8;
+        border-radius: 4px;
+    }
+    .btn-shopnow {
+        display: inline-block;
+        padding: 12px 32px;
+        background: #e8ab27;
+        color: #fff;
+        border-radius: 3px;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 15px;
+        transition: background 0.2s;
+    }
+    .btn-shopnow:hover {
+        background: #cf9820;
+        color: #fff;
+    }
+</style>
+
+<div class="cart-wrap">
+    <div class="container">
+
+        @if (TempData["message"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show mb-3" role="alert" style="font-size:14px; border-radius:3px;">
+                @TempData["message"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
+        }
+
+        <div class="breadcrumb-bar">
+            <a href="/Customer/Index"> </a>Shopping Cart
         </div>
+
+        <div class="cart-title">
+            Shopping Cart
+        </div>
+
+        @if (Model.Count == 0)
+        {
+            <div class="empty-cart">
+                <div style="font-size:58px; margin-bottom:14px;">🛒</div>
+                <h5 style="font-size:20px; color:#444; margin-bottom:8px;">আপনার Cart খালি!</h5>
+                <p style="color:#999; margin-bottom:22px;">কোনো product add করা হয়নি।</p>
+                <a href="/Customer/FetchAllProduct" class="btn-shopnow">Shop Now</a>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+
+                <!-- Products -->
+                <div class="col-lg-8">
+                    <div class="cart-card">
+                        <div class="cart-card-header">
+                            <h6>Your Products</h6>
+                            <p>@Model.Count টি item আছে</p>
+                        </div>
+
+                        @foreach (var item in Model)
+                        {
+                            decimal itemTotal = 0m;
+                            if (item.products != null && decimal.TryParse(item.products.Price.ToString(),
+                                NumberStyles.Any, CultureInfo.InvariantCulture, out var ip))
+                            {
+                                itemTotal = ip * item.ProductQuantity;
+                            }
+
+                            <div class="cart-item">
+                                <img src="~/ProductImage/@item.products?.Image" alt="@item.products?.Name" />
+
+                                <div class="item-info">
+                                    <div class="item-name">@item.products?.Name</div>
+                                    <div class="item-unit-label">৳ @item.products?.Price / unit</div>
+                                    @if (item.CartStatus == 0)
+                                    {
+                                        <span class="badge-pending">Pending</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-ordered">✅ Ordered</span>
+                                    }
+                                </div>
+
+                                @if (item.CartStatus == 0)
+                                {
+                                    <div class="qty-wrap">
+                                        <a href="/Customer/DecreaseQuantity?id=@item.Id" class="qty-btn">−</a>
+                                        <span class="qty-num">@item.ProductQuantity</span>
+                                        <a href="/Customer/IncreaseQuantity?id=@item.Id" class="qty-btn">+</a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div style="width:110px; text-align:center; font-size:14px; color:#888;">
+                                        Qty: <strong style="color:#222;">@item.ProductQuantity</strong>
+                                    </div>
+                                }
+
+                                <div class="item-price-area">
+                                    <div class="item-total-price">৳ @itemTotal.ToString("0.00")</div>
+                                    <div class="item-calc">৳ @item.products?.Price × @item.ProductQuantity</div>
+                                    @if (item.CartStatus == 0)
+                                    {
+                                        <a href="/Customer/PlaceOrder?id=@item.Id" class="btn-order">🛒 Order Now</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="ordered-label">Order দেওয়া হয়েছে</span>
+                                    }
+                                </div>
+
+                                <a href="/Customer/RemoveProduct?id=@item.Id" class="btn-remove">✕</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="col-lg-4">
+                    <div class="summary-card">
+                        <div class="summary-heading">Order Summary</div>
+
+                        @foreach (var item in Model)
+                        {
+                            decimal sTotal = 0m;
+                            if (item.products != null && decimal.TryParse(item.products.Price.ToString(),
+                                NumberStyles.Any, CultureInfo.InvariantCulture, out var sp))
+                            {
+                                sTotal = sp * item.ProductQuantity;
+                            }
+                            <div class="summary-line">
+                                <span>@item.products?.Name × @item.ProductQuantity</span>
+                                <span>৳ @sTotal.ToString("0.00")</span>
+                            </div>
+                        }
+
+                        <div class="summary-line">
+                            <span>Home Delivery</span>
+                            <span class="free-label">FREE</span>
+                        </div>
+
+                        <div class="summary-total-row">
+                            <span class="summary-total-label">Total:</span>
+                            <span class="summary-total-amount">৳ @grandTotal.ToString("0.00")</span>
+                        </div>
+
+                        <a href="/Customer/FetchAllProduct" class="btn-addmore">+ Add More</a>
+                        <a href="/Customer/Index" class="btn-checkout-main">Checkout →</a>
+                    </div>
+                </div>
+
+            </div>
+        }
     </div>
 </div>

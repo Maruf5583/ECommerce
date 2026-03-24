@@ -25,6 +25,8 @@ namespace ECommerce.Data
 
         public DbSet <Faqs> Faqs { get; set; }
 
-     
+        public DbSet<Order> Orders { get; set; }
+
+
     }
 }

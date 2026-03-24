@@ -1,0 +1,89 @@
+﻿@model ECommerce.Models.Order
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<div class="container mt-5">
+    <h2 class="fw-bold mb-4">📋 Order Details</h2>
+
+    <div class="card shadow-lg p-4 rounded-4" style="max-width:600px;">
+        <table class="table table-bordered">
+            <tr>
+                <th>Order ID</th>
+                <td>@Model.Id</td>
+            </tr>
+            <tr>
+                <th>Customer Name</th>
+                <td>@Model.carts?.customers?.Name</td>
+            </tr>
+            <tr>
+                <th>Customer Email</th>
+                <td>@Model.carts?.customers?.Eamil</td>
+            </tr>
+            <tr>
+                <th>Product Name</th>
+                <td>@Model.carts?.products?.Name</td>
+            </tr>
+            <tr>
+                <th>Product Image</th>
+                <td>
+                    <img src="~/ProductImage/@Model.carts?.products?.Image"
+                         width="100" height="100"
+                         style="object-fit:cover; border-radius:8px;" />
+                </td>
+            </tr>
+            <tr>
+                <th>Product Price</th>
+                <td>$@Model.carts?.products?.Price</td>
+            </tr>
+            <tr>
+                <th>Quantity</th>
+                <td>@Model.carts?.ProductQuantity</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>
+                    @if (Model.Status == 0)
+                    {
+                        <span class="badge bg-warning text-dark">Pending</span>
+                    }
+                    else if (Model.Status == 1)
+                    {
+                        <span class="badge bg-primary">Confirmed</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">Delivered</span>
+                    }
+                </td>
+            </tr>
+        </table>
+
+        <!-- Status Update -->
+        <div class="mt-3">
+            <h5 class="fw-bold">Update Status</h5>
+            <div style="display:flex; gap:10px;">
+                <a href="/Admin/UpdateOrderStatus/@Model.Id?status=0"
+                   class="btn btn-warning btn-sm">
+                    Pending
+                </a>
+                <a href="/Admin/UpdateOrderStatus/@Model.Id?status=1"
+                   class="btn btn-primary btn-sm">
+                    Confirmed
+                </a>
+                <a href="/Admin/UpdateOrderStatus/@Model.Id?status=2"
+                   class="btn btn-success btn-sm">
+                    Delivered
+                </a>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="/Admin/FetchOrders"
+               class="btn btn-secondary">
+                ⬅ Back to Orders
+            </a>
+        </div>
+    </div>
+</div>

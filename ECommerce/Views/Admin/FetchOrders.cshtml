@@ -1,0 +1,84 @@
+﻿@model List<ECommerce.Models.Order>
+
+@{
+    ViewData["Title"] = "All Orders";
+}
+
+<div class="container mt-4">
+    <div style="display:flex; justify-content:space-between;
+         align-items:center; margin-bottom:15px;">
+        <h2 class="fw-bold">📦 All Orders</h2>
+        <a href="/Admin/Index" class="btn btn-secondary">
+            ⬅ Back to Dashboard
+        </a>
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-warning text-center fs-5">
+            কোনো Order নেই।
+        </div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name</th>
+                    <th>Product Name</th>
+                    <th>Product Image</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.Id</td>
+                        <td>@order.carts?.customers?.Name</td>
+                        <td>@order.carts?.products?.Name</td>
+                        <td>
+                            <img src="~/ProductImage/@order.carts?.products?.Image"
+                                 width="60" height="60"
+                                 style="object-fit:cover; border-radius:8px;" />
+                        </td>
+                        <td>@order.carts?.ProductQuantity</td>
+                        <td>
+                            @if (order.Status == 0)
+                            {
+                                <span class="badge bg-warning text-dark">
+                                    Pending
+                                </span>
+                            }
+                            else if (order.Status == 1)
+                            {
+                                <span class="badge bg-primary">
+                                    Confirmed
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">
+                                    Delivered
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            <a href="/Admin/OrderDetails/@order.Id"
+                               class="btn btn-info btn-sm">
+                                👁 Details
+                            </a>
+                            <a href="/Admin/DeleteOrderConfirmed/@order.Id"
+                               class="btn btn-danger btn-sm">
+                                🗑 Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
