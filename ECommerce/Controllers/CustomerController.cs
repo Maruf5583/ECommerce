@@ -312,7 +312,7 @@ namespace ECommerce.Controllers
             return View(orders);
         }
 
-        // ✅ PlaceOrder - parameter নাম "id" করুন
+        
         public IActionResult PlaceOrder(int id)
         {
             string isLogin = HttpContext.Session.GetString("customerSession");
