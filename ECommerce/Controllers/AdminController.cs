@@ -364,7 +364,7 @@ namespace ECommerce.Controllers
 
         public IActionResult FetchCart()
         {
-            // ✅ ProductId/CustomerId er bodole Product/Customer use koro
+          
             var cart = _context.Carts
                         .Include(c => c.products)
                         .Include(c => c.customers)

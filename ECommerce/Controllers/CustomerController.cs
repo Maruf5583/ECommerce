@@ -248,7 +248,7 @@ namespace ECommerce.Controllers
                 }
                 else
                 {
-                    // ✅ Quantity 1 হলে cart থেকে remove
+                    
                     _context.Carts.Remove(cart);
                     _context.SaveChanges();
                 }
@@ -289,7 +289,7 @@ namespace ECommerce.Controllers
 
 
 
-        // ✅ MyOrders - শুধু orders দেখাবে
+     
         public IActionResult MyOrders()
         {
             string isLogin = HttpContext.Session.GetString("customerSession");
@@ -334,11 +334,11 @@ namespace ECommerce.Controllers
                 return RedirectToAction(nameof(FetchCart));
             }
 
-            // Cart status update
+            
             cart.CartStatus = 1;
             _context.Carts.Update(cart);
 
-            // Order insert
+           
             var order = new Order
             {
                 CartId = id,
