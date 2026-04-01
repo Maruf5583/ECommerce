@@ -18,7 +18,35 @@ namespace ECommerce.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            // Dashboard statistics
+            var totalCustomers = _context.Customers.Count();
+            var totalOrders = _context.Orders.Count();
+
+            // Calculate total income by summing product price * quantity for orders
+            decimal totalIncome = _context.Orders
+                .Include(o => o.carts)
+                    .ThenInclude(c => c.products)
+                .Select(o => (o.carts != null && o.carts.products != null)
+                    ? o.carts.products.Price * o.carts.ProductQuantity
+                    : 0)
+                .Sum();
+
+            // Group orders by status for charting
+            var statusGroups = _context.Orders
+                .GroupBy(o => o.Status)
+                .Select(g => new { Status = g.Key, Count = g.Count() })
+                .ToList();
+
+            var model = new AdminDashboardViewModel
+            {
+                TotalCustomers = totalCustomers,
+                TotalOrders = totalOrders,
+                TotalIncome = totalIncome,
+                OrderStatusLabels = statusGroups.Select(s => "Status " + s.Status).ToList(),
+                OrderStatusData = statusGroups.Select(s => s.Count).ToList()
+            };
+
+            return View(model);
         }
 
         // ========== AUTH ==========

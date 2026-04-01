@@ -1,1 +1,210 @@
-﻿<h1> Dashbord</h1>
+﻿@model ECommerce.Models.AdminDashboardViewModel
+
+<style>
+    .dash-wrap {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        padding: 2rem 0;
+    }
+
+    .dash-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0 0 1.5rem;
+    }
+
+    .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-bottom: 1.75rem;
+    }
+
+    .metric-card {
+        background: #f5f5f3;
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+    }
+
+    .metric-label {
+        font-size: 12px;
+        color: #888780;
+        margin: 0 0 6px;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+    }
+
+    .metric-value {
+        font-size: 28px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .accent-blue .metric-value  { color: #185FA5; }
+    .accent-green .metric-value { color: #3B6D11; }
+    .accent-teal .metric-value  { color: #0F6E56; }
+
+    .bottom-grid {
+        display: grid;
+        grid-template-columns: 1.8fr 1fr;
+        gap: 16px;
+    }
+
+    .card {
+        background: #ffffff;
+        border: 0.5px solid rgba(0,0,0,.1);
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+    }
+
+    .card-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: #888780;
+        margin: 0 0 1rem;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 0.5px solid rgba(0,0,0,.08);
+    }
+
+    .summary-row:last-child { border-bottom: none; }
+
+    .summary-key { font-size: 14px; color: #5F5E5A; }
+    .summary-val { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+
+    .legend-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 16px;
+        margin-bottom: 14px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: #5F5E5A;
+    }
+
+    .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+        flex-shrink: 0;
+    }
+</style>
+
+<div class="dash-wrap container">
+    <p class="dash-title">Admin Dashboard</p>
+
+    <div class="metric-grid">
+        <div class="metric-card accent-blue">
+            <p class="metric-label">Total customers</p>
+            <p class="metric-value">@Model.TotalCustomers.ToString("N0")</p>
+        </div>
+        <div class="metric-card accent-green">
+            <p class="metric-label">Total orders</p>
+            <p class="metric-value">@Model.TotalOrders.ToString("N0")</p>
+        </div>
+        <div class="metric-card accent-teal">
+            <p class="metric-label">Total income</p>
+            <p class="metric-value">@Model.TotalIncome.ToString("C0")</p>
+        </div>
+    </div>
+
+    <div class="bottom-grid">
+        <div class="card">
+            <p class="card-title">Orders by status</p>
+            <div class="legend-wrap" id="statusLegend"></div>
+            <div style="position: relative; height: 260px;">
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <p class="card-title">Summary</p>
+            <div class="summary-row">
+                <span class="summary-key">Customers</span>
+                <span class="summary-val">@Model.TotalCustomers.ToString("N0")</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-key">Orders</span>
+                <span class="summary-val">@Model.TotalOrders.ToString("N0")</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-key">Income</span>
+                <span class="summary-val">@Model.TotalIncome.ToString("C")</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    (function () {
+    const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.OrderStatusLabels));
+    const data   = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.OrderStatusData));
+
+    const palette = [
+    '#378ADD','#1D9E75','#BA7517','#3B6D11',
+    '#E24B4A','#D4537E','#7F77DD','#5F5E5A',
+    '#97C459','#5DCAA5'
+    ];
+
+    const total = data.reduce((s, v) => s + (Number(v) || 0), 0);
+
+    // build custom legend
+    const legend = document.getElementById('statusLegend');
+    labels.forEach((l, i) => {
+    const pct = total ? Math.round((Number(data[i]) / total) * 100) : 0;
+    const item = document.createElement('span');
+    item.className = 'legend-item';
+    item.innerHTML = `<span class="legend-dot" style="background:${palette[i % palette.length]}"></span>${l} ${pct}%`;
+    legend.appendChild(item);
+    });
+
+    new Chart(document.getElementById('statusChart'), {
+    type: 'doughnut',
+    data: {
+    labels,
+    datasets: [{
+    data,
+    backgroundColor: palette.slice(0, labels.length),
+    borderColor: '#ffffff',
+    borderWidth: 3,
+    hoverOffset: 6
+    }]
+    },
+    options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '65%',
+    animation: {
+    duration: 0,
+    animateRotate: false,
+    animateScale: false
+    },
+    plugins: {
+    legend: { display: false },
+    tooltip: {
+    callbacks: {
+    label: function (ctx) {
+    const val = ctx.parsed;
+    const pct = total ? (val / total * 100).toFixed(1) : '0.0';
+    return ` ${labels[ctx.dataIndex]}: ${val.toLocaleString()} (${pct}%)`;
+    }
+    }
+    }
+    }
+    }
+    });
+    })();
+</script>
